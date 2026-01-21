@@ -1,10 +1,10 @@
-package com.ltj.blog.service.impl;
+package com.yuan.yuanblog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ltj.blog.entity.Tag;
-import com.ltj.blog.mapper.TagMapper;
-import com.ltj.blog.service.TagService;
+import com.yuan.yuanblog.entity.Tag;
+import com.yuan.yuanblog.mapper.TagMapper;
+import com.yuan.yuanblog.service.TagService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 

@@ -1,18 +1,18 @@
-package com.ltj.blog.controller;
+package com.yuan.yuanblog.controller.controller;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ltj.blog.common.util.JwtUtils;
-import com.ltj.blog.common.vo.LoginDto;
-import com.ltj.blog.common.vo.Result;
-import com.ltj.blog.entity.Blog;
-import com.ltj.blog.entity.User;
-import com.ltj.blog.es.BlogDocumentService;
-import com.ltj.blog.service.BlogService;
-import com.ltj.blog.service.UserService;
+import com.yuan.yuanblog.common.util.JwtUtils;
+import com.yuan.yuanblog.vo.LoginDto;
+import com.yuan.yuanblog.vo.Result;
+import com.yuan.yuanblog.entity.Blog;
+import com.yuan.yuanblog.entity.User;
+import com.yuan.yuanblog.es.BlogDocumentService;
+import com.yuan.yuanblog.service.BlogService;
+import com.yuan.yuanblog.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;

@@ -1,4 +1,4 @@
-package com.yuan.yuanblog.common.vo;
+package com.yuan.yuanblog.vo;
 
 import lombok.Data;
 

@@ -1,21 +1,20 @@
-package com.ltj.blog.controller;
+package com.yuan.yuanblog.controller.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ltj.blog.common.vo.Result;
-import com.ltj.blog.entity.VisitLog;
-import com.ltj.blog.service.VisitLogService;
+import com.yuan.yuanblog.vo.Result;
+import com.yuan.yuanblog.entity.VisitLog;
+import com.yuan.yuanblog.service.VisitLogService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 访客记录前端控制器

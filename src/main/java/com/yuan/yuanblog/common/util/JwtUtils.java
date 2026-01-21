@@ -1,122 +1,81 @@
 package com.yuan.yuanblog.common.util;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.lionsoul.ip2region.DataBlock;
-import org.lionsoul.ip2region.DbConfig;
-import org.lionsoul.ip2region.DbSearcher;
-import org.lionsoul.ip2region.Util;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import java.io.InputStream;
-import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * jwt工具类
+ */
 @Slf4j
+@Data
 @Component
-public class IpAddressUtils {
+@ConfigurationProperties(prefix = "yuanblog.jwt")
+public class JwtUtils {
 
-    private static DbSearcher searcher;
-    private static Method method;
+    private String secret;
+    private long expire;
+    private String header;
 
     /**
-     * 在服务启动时加载 ip2region.db 到内存中
-     * 解决打包jar后找不到 ip2region.db 的问题
+     * 生成 JWT Token 字符串
+     *
+     * @param userId       签发人id
+     * @param username       签发人name
+     * expireDate       过期时间 签发时间
+     * claims           额外添加到荷载部分的信息。
+     *                  例如可以添加用户名、用户ID、用户（加密前的）密码等信息
      */
-    @PostConstruct
-    private void initIp2regionResource() {
-        try {
-            InputStream inputStream = new ClassPathResource("/ipdb/ip2region.db").getInputStream();
-            //将 ip2region.db 转为 ByteArray
-            byte[] dbBinStr = FileCopyUtils.copyToByteArray(inputStream);
-            DbConfig dbConfig = new DbConfig();
-            searcher = new DbSearcher(dbConfig, dbBinStr);
-            //二进制方式初始化 DBSearcher，需要使用基于内存的查找算法 memorySearch
-            method = searcher.getClass().getMethod("memorySearch", String.class);
-        } catch (Exception e) {
-            log.error("initIp2regionResource handler:", e);
-        }
+    public String generateToken(long userId,String username) {
+        Date nowDate = new Date();
+        //过期时间
+        Date expireDate = new Date(nowDate.getTime() + expire * 1000);
+        Map<String, Object> claims = new HashMap<>();//创建payload的私有声明（根据特定的业务需要添加，如果要拿这个做验证，一般是需要和jwt的接收方提前沟通好验证方式的）
+        claims.put("userId", userId+"");
+        claims.put("username", username);
+        return Jwts.builder()    // 创建 JWT 对象
+                .setHeaderParam("typ", "JWT")  //设置头部信息
+                .setClaims(claims)     // 设置私有声明
+                .setIssuedAt(nowDate)        //设置payload的签发时间
+                .setExpiration(expireDate)   //设置payload的过期时间
+                .signWith(SignatureAlgorithm.HS512, secret)  // 设置安全密钥（生成签名所需的密钥和算法）
+                .compact();            //生成token（1.编码 Header 和 Payload 2.生成签名 3.拼接字符串）
     }
-
     /**
-     * 根据ip从 ip2region.db 中获取地理位置
+     *  解析校验token
+     * JWT Token 由 头部 荷载部 和 签名部 三部分组成。签名部分是由加密算法生成，无法反向解密。
+     * 而 头部 和 荷载部分是由 Base64 编码算法生成，是可以反向反编码回原样的。
+     * 这也是为什么不要在 JWT Token 中放敏感数据的原因。
+     *
+     * @param token 加密后的token
+     * @return claims 返回荷载部分的键值对
      */
-    public static String getCityInfo(String ip) {
-        System.out.println("=================ipipipipipipipipip=================" + ip);
-        if (ip == null || !Util.isIpAddress(ip)) {
-            log.error("Error: Invalid ip address");
+    public Claims getClaimByToken(String token) {
+        try {
+            return Jwts.parser()           // 创建解析对象
+                    .setSigningKey(secret)   // 设置安全密钥（生成签名所需的密钥和算法）
+                    .parseClaimsJws(token)  // 解析token
+                    .getBody();     // 获取 payload 部分内容
+        } catch (Exception e) {
+            log.debug("validate is token error ", e);
             return null;
         }
-        try {
-            DataBlock dataBlock = (DataBlock) method.invoke(searcher, ip);
-            String ipInfo = dataBlock.getRegion();
-            if (!StringUtils.isEmpty(ipInfo)) {
-                ipInfo = ipInfo.replace("|0", "");
-                ipInfo = ipInfo.replace("0|", "");
-            }
-            return ipInfo;
-        } catch (Exception e) {
-            log.error("getCityInfo handler:", e);
-        }
-        return null;
     }
 
     /**
-     * 获取IP地址:
-     * 使用Nginx等反向代理软件， 则不能通过request.getRemoteAddr()获取IP地址
-     * 如果使用了多级反向代理的话，X-Forwarded-For的值并不止一个，而是一串IP地址，X-Forwarded-For中第一个非unknown的有效IP字符串，则为真实IP地址
+     * token是否过期
+     *
+     * @return true：过期
      */
-    public static String getIpAddr(HttpServletRequest request) {
-        String ip = null, unknown = "unknown", seperator = ",";
-        int maxLength = 15;
-        try {
-            ip = request.getHeader("x-forwarded-for");
-            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
-                ip = request.getHeader("Proxy-Client-IP");
-            }
-            if (StringUtils.isEmpty(ip) || ip.length() == 0 || unknown.equalsIgnoreCase(ip)) {
-                ip = request.getHeader("WL-Proxy-Client-IP");
-            }
-            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
-                ip = request.getHeader("HTTP_CLIENT_IP");
-            }
-            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
-                ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-            }
-            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
-                ip = request.getRemoteAddr();
-            }
-        } catch (Exception e) {
-            log.error("IpUtils ERROR ", e);
-        }
-
-        // 使用代理，则获取第一个IP地址
-        if (StringUtils.isEmpty(ip) && ip.length() > maxLength) {
-            int idx = ip.indexOf(seperator);
-            if (idx > 0) {
-                ip = ip.substring(0, idx);
-            }
-        }
-
-        return ip;
-    }
-
-    /**
-     * 获取ip地址
-     */
-    public static String getIpAddr() {
-        HttpServletRequest request = getHttpServletRequest();
-        return getIpAddr(request);
-    }
-
-    private static HttpServletRequest getHttpServletRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    public boolean isTokenExpired(Date expiration) {
+        return expiration.before(new Date());
     }
 }
-
-

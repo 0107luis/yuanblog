@@ -1,9 +1,10 @@
 package com.yuan.yuanblog.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yuan.yuanblog.common.vo.BlogInfoVo;
-import com.yuan.yuanblog.entity.Blog;
+import com.yuan.yuanblog.vo.UserInfoVo;
+import com.yuan.yuanblog.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,9 +16,10 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface BlogMapper extends BaseMapper<Blog> {
+public interface UserMapper extends BaseMapper<User> {
     /**
-     * 根据分类查询博客
+     * 获取用户部分信息list
      */
-    List<BlogInfoVo> queryBlogByTypeName(String typeName);
+    @Select("select id, nickname, username, avatar, email, status, create_time, update_time, role  from user  order by create_time desc")
+    List<UserInfoVo> getUserInfo();
 }

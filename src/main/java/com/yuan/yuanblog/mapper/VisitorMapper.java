@@ -1,23 +1,34 @@
 package com.yuan.yuanblog.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yuan.yuanblog.common.vo.BlogInfoVo;
-import com.yuan.yuanblog.entity.Blog;
+import com.yuan.yuanblog.vo.Visitor;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * <p>
- * Mapper 接口
+ *  Mapper 接口
  * </p>
  */
 @Mapper
 @Repository
-public interface BlogMapper extends BaseMapper<Blog> {
+public interface VisitorMapper extends BaseMapper<Visitor> {
     /**
-     * 根据分类查询博客
+     * 查询uuid是否已经存在
      */
-    List<BlogInfoVo> queryBlogByTypeName(String typeName);
+    int hasUUID(String uuid);
+
+    /**
+     * 通过uuid找到访客
+     */
+    @Select("select id, uuid, ip, ip_source, os, browser, create_time, last_time, pv,user_agent from visitor  where uuid=#{uuid}")
+    Visitor selectByUuid(@Param("uuid")String uuid);
+
+    /**
+     * 计算pv
+     */
+    @Select("select COALESCE(sum(pv),0) from visitor")
+    int getPv();
 }

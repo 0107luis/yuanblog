@@ -1,4 +1,4 @@
-package com.ltj.blog.controller;
+package com.yuan.yuanblog.controller.controller;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package com.ltj.blog.shiro;
+package com.yuan.yuanblog.shiro;
 
 import org.apache.shiro.authc.AuthenticationToken;
 

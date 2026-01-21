@@ -1,8 +1,8 @@
-package com.ltj.blog.shiro;
+package com.yuan.yuanblog.shiro;
 
 import cn.hutool.json.JSONUtil;
-import com.ltj.blog.common.vo.Result;
-import com.ltj.blog.common.util.JwtUtils;
+import com.yuan.yuanblog.common.util.JwtUtils;
+import com.yuan.yuanblog.vo.Result;
 import io.jsonwebtoken.Claims;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;

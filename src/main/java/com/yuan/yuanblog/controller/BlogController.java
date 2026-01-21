@@ -1,22 +1,21 @@
-package com.ltj.blog.controller;
+package com.yuan.yuanblog.controller.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ltj.blog.common.config.RabbitMQConfig;
-import com.ltj.blog.common.constant.RedisKeyConfig;
-import com.ltj.blog.common.util.ShiroUtils;
-import com.ltj.blog.common.vo.Result;
-import com.ltj.blog.entity.Blog;
-import com.ltj.blog.mq.BlogMQIndexMessage;
-import com.ltj.blog.service.BlogService;
-import com.ltj.blog.service.CommentService;
-import com.ltj.blog.service.RedisService;
+import com.yuan.yuanblog.common.config.RabbitMQConfig;
+import com.yuan.yuanblog.common.constant.RedisKeyConfig;
+import com.yuan.yuanblog.common.util.ShiroUtils;
+import com.yuan.yuanblog.vo.Result;
+import com.yuan.yuanblog.entity.Blog;
+import com.yuan.yuanblog.mq.BlogMQIndexMessage;
+import com.yuan.yuanblog.service.BlogService;
+import com.yuan.yuanblog.service.CommentService;
+import com.yuan.yuanblog.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -28,7 +27,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**

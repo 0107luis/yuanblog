@@ -1,10 +1,10 @@
-package com.ltj.blog.service.impl;
+package com.yuan.yuanblog.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ltj.blog.common.vo.PageCommentVo;
-import com.ltj.blog.entity.Comment;
-import com.ltj.blog.mapper.CommentMapper;
-import com.ltj.blog.service.CommentService;
+import com.yuan.yuanblog.vo.PageCommentVo;
+import com.yuan.yuanblog.entity.Comment;
+import com.yuan.yuanblog.mapper.CommentMapper;
+import com.yuan.yuanblog.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

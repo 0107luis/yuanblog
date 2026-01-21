@@ -1,7 +1,7 @@
-package com.ltj.blog.service;
+package com.yuan.yuanblog.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ltj.blog.entity.Tag;
+import com.yuan.yuanblog.entity.Tag;
 
 import java.util.List;
 

@@ -8,6 +8,6 @@ import com.yuan.yuanblog.entity.BlogTag;
  * Mapper 接口
  * </p>
  */
-public interface logTagMapper extends BaseMapper<BlogTag> {
+public interface BlogTagMapper extends BaseMapper<BlogTag> {
 
 }

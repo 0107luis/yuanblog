@@ -1,9 +1,9 @@
-package com.ltj.blog.service.impl;
+package com.yuan.yuanblog.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ltj.blog.entity.Visitor;
-import com.ltj.blog.mapper.VisitorMapper;
-import com.ltj.blog.service.VisitorService;
+import com.yuan.yuanblog.vo.Visitor;
+import com.yuan.yuanblog.mapper.VisitorMapper;
+import com.yuan.yuanblog.service.VisitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

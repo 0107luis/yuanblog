@@ -1,9 +1,9 @@
-package com.ltj.blog.shiro;
+package com.yuan.yuanblog.shiro;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ltj.blog.entity.User;
-import com.ltj.blog.service.UserService;
-import com.ltj.blog.common.util.JwtUtils;
+import com.yuan.yuanblog.common.util.JwtUtils;
+import com.yuan.yuanblog.entity.User;
+import com.yuan.yuanblog.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;

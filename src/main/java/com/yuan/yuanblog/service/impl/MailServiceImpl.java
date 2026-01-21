@@ -1,6 +1,6 @@
-package com.ltj.blog.service.impl;
+package com.yuan.yuanblog.service.impl;
 
-import com.ltj.blog.service.MailService;
+import com.yuan.yuanblog.service.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

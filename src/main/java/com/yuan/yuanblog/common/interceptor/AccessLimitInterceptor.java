@@ -3,7 +3,7 @@ package com.yuan.yuanblog.common.interceptor;
 import cn.hutool.json.JSONObject;
 import com.yuan.yuanblog.common.annotation.AccessLimit;
 import com.yuan.yuanblog.common.util.IpAddressUtils;
-import com.yuan.yuanblog.common.vo.Result;
+import com.yuan.yuanblog.vo.Result;
 import com.yuan.yuanblog.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

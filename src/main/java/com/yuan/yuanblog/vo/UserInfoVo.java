@@ -1,4 +1,4 @@
-package com.yuan.yuanblog.common.vo;
+package com.yuan.yuanblog.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

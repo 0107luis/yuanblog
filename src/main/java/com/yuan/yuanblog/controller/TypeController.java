@@ -1,13 +1,13 @@
-package com.ltj.blog.controller;
+package com.yuan.yuanblog.controller.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ltj.blog.common.vo.Result;
-import com.ltj.blog.common.constant.RedisKeyConfig;
-import com.ltj.blog.entity.Type;
-import com.ltj.blog.service.RedisService;
-import com.ltj.blog.service.TypeService;
+import com.yuan.yuanblog.common.constant.RedisKeyConfig;
+import com.yuan.yuanblog.vo.Result;
+import com.yuan.yuanblog.entity.Type;
+import com.yuan.yuanblog.service.RedisService;
+import com.yuan.yuanblog.service.TypeService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;

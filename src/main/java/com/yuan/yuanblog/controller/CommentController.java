@@ -1,19 +1,19 @@
-package com.ltj.blog.controller;
+package com.yuan.yuanblog.controller.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ltj.blog.common.annotation.AccessLimit;
-import com.ltj.blog.common.annotation.VisitLogger;
-import com.ltj.blog.common.util.MyBlogUtils;
-import com.ltj.blog.common.vo.PageCommentVo;
-import com.ltj.blog.common.vo.Result;
-import com.ltj.blog.entity.Comment;
-import com.ltj.blog.service.BlogService;
-import com.ltj.blog.service.CommentService;
-import com.ltj.blog.service.MailService;
+import com.yuan.yuanblog.common.annotation.AccessLimit;
+import com.yuan.yuanblog.common.annotation.VisitLogger;
+import com.yuan.yuanblog.common.util.MyBlogUtils;
+import com.yuan.yuanblog.vo.PageCommentVo;
+import com.yuan.yuanblog.vo.Result;
+import com.yuan.yuanblog.entity.Comment;
+import com.yuan.yuanblog.service.BlogService;
+import com.yuan.yuanblog.service.CommentService;
+import com.yuan.yuanblog.service.MailService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;

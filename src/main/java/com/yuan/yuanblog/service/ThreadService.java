@@ -1,7 +1,7 @@
-package com.ltj.blog.service;
+package com.yuan.yuanblog.service;
 
 
-import com.ltj.blog.entity.Blog;
+import com.yuan.yuanblog.entity.Blog;
 
 public interface ThreadService {
     void updateViewCount(Blog blog);

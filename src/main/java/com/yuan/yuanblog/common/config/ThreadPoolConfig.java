@@ -1,103 +1,34 @@
 package com.yuan.yuanblog.common.config;
 
-import com.yuan.yuanblog.shiro.AccountRealm;
-import com.yuan.yuanblog.shiro.JwtFilter;
-import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
-import org.apache.shiro.mgt.DefaultSubjectDAO;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.session.mgt.SessionManager;
-import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
-import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.crazycake.shiro.RedisCacheManager;
-import org.crazycake.shiro.RedisSessionDAO;
-import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import javax.servlet.Filter;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.concurrent.Executor;
 
-/**
- * shiro配置类
- */
+// 线程池配置
 @Configuration
-public class ShiroConfig {
+@EnableAsync
+public class ThreadPoolConfig {
 
-    @Autowired
-    private JwtFilter jwtFilter;
-
-    @Bean
-    public SessionManager sessionManager(RedisSessionDAO redisSessionDAO) {
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-
-        // inject redisSessionDAO
-        sessionManager.setSessionDAO(redisSessionDAO);
-        return sessionManager;
+    @Bean("taskExecutor")
+    public Executor asyncServiceExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        // 设置核心线程数
+        executor.setCorePoolSize(5);
+        // 设置最大线程数
+        executor.setMaxPoolSize(20);
+        // 配置队列大小
+        executor.setQueueCapacity(Integer.MAX_VALUE);
+        // 配置线程活跃时间（秒）
+        executor.setKeepAliveSeconds(60);
+        // 配置默认线程名称
+        executor.setThreadNamePrefix("小源先生的默认线程");
+        // 等待所有任务结束后再关闭线程池
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        // 执行初始化
+        executor.initialize();
+        return executor;
     }
-
-    @Bean
-    public DefaultWebSecurityManager securityManager(AccountRealm accountRealm,
-                                                     SessionManager sessionManager,
-                                                     RedisCacheManager redisCacheManager) {
-
-        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager(accountRealm);
-
-        //inject sessionManager
-        securityManager.setSessionManager(sessionManager);
-
-        // inject redisCacheManager
-        securityManager.setCacheManager(redisCacheManager);
-
-        //关闭shiro自带的session
-        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
-        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
-        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
-        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
-        securityManager.setSubjectDAO(subjectDAO);
-        return securityManager;
-    }
-
-    @Bean
-    public ShiroFilterChainDefinition shiroFilterChainDefinition() {
-        DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
-        Map<String, String> filterMap = new LinkedHashMap<>();
-        // 主要通过注解方式校验权限，所有的请求都要经过jwt过滤器
-        filterMap.put("/**", "jwt");
-        chainDefinition.addPathDefinitions(filterMap);
-        return chainDefinition;
-    }
-
-    @Bean("shiroFilterFactoryBean")
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager,
-                                                         ShiroFilterChainDefinition shiroFilterChainDefinition) {
-        ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
-        shiroFilter.setSecurityManager(securityManager);
-
-        Map<String, Filter> filters = new HashMap<>();
-        //使用jwtFilter过滤器
-        filters.put("jwt", jwtFilter);
-        shiroFilter.setFilters(filters);
-
-        Map<String, String> filterMap = shiroFilterChainDefinition.getFilterChainMap();
-
-        shiroFilter.setFilterChainDefinitionMap(filterMap);
-        return shiroFilter;
-    }
-
-    /**
-     * 解决aop与shiro冲突问题
-     */
-    @Bean
-    public static DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator(){
-        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator=new DefaultAdvisorAutoProxyCreator();
-        defaultAdvisorAutoProxyCreator.setUsePrefix(true);
-        return defaultAdvisorAutoProxyCreator;
-    }
-
 }

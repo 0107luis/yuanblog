@@ -1,75 +1,103 @@
 package com.yuan.yuanblog.common.config;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.cache.annotation.EnableCaching;
+import com.yuan.yuanblog.shiro.AccountRealm;
+import com.yuan.yuanblog.shiro.JwtFilter;
+import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
+import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisSessionDAO;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import javax.servlet.Filter;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * Redis配置类
+ * shiro配置类
  */
 @Configuration
-@EnableCaching
-public class RedisConfig {
-//
-//    /**
-//     * 缓存管理配置
-//     */
-//    @Bean
-//    public CacheManager cacheManager(RedisConnectionFactory factory) {
-//        RedisSerializer<String> redisSerializer = new StringRedisSerializer();
-//
-//
-//        // 配置序列化（解决乱码的问题）
-//        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-//                .entryTtl(Duration.ofDays(1))
-//                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))
-//                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))
-//                .disableCachingNullValues()
-//                .entryTtl(Duration.ofHours(24)); // 设置缓存有效期24小时
-//
-//        RedisCacheManager cacheManager = RedisCacheManager.builder(factory)
-//                .cacheDefaults(config)
-//                .build();
-//        return cacheManager;
-//    }
+public class ShiroConfig {
+
+    @Autowired
+    private JwtFilter jwtFilter;
+
+    @Bean
+    public SessionManager sessionManager(RedisSessionDAO redisSessionDAO) {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+
+        // inject redisSessionDAO
+        sessionManager.setSessionDAO(redisSessionDAO);
+        return sessionManager;
+    }
+
+    @Bean
+    public DefaultWebSecurityManager securityManager(AccountRealm accountRealm,
+                                                     SessionManager sessionManager,
+                                                     RedisCacheManager redisCacheManager) {
+
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager(accountRealm);
+
+        //inject sessionManager
+        securityManager.setSessionManager(sessionManager);
+
+        // inject redisCacheManager
+        securityManager.setCacheManager(redisCacheManager);
+
+        //关闭shiro自带的session
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
+        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
+        securityManager.setSubjectDAO(subjectDAO);
+        return securityManager;
+    }
+
+    @Bean
+    public ShiroFilterChainDefinition shiroFilterChainDefinition() {
+        DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
+        Map<String, String> filterMap = new LinkedHashMap<>();
+        // 主要通过注解方式校验权限，所有的请求都要经过jwt过滤器
+        filterMap.put("/**", "jwt");
+        chainDefinition.addPathDefinitions(filterMap);
+        return chainDefinition;
+    }
+
+    @Bean("shiroFilterFactoryBean")
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager,
+                                                         ShiroFilterChainDefinition shiroFilterChainDefinition) {
+        ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
+        shiroFilter.setSecurityManager(securityManager);
+
+        Map<String, Filter> filters = new HashMap<>();
+        //使用jwtFilter过滤器
+        filters.put("jwt", jwtFilter);
+        shiroFilter.setFilters(filters);
+
+        Map<String, String> filterMap = shiroFilterChainDefinition.getFilterChainMap();
+
+        shiroFilter.setFilterChainDefinitionMap(filterMap);
+        return shiroFilter;
+    }
 
     /**
-     *  redisTemplate的序列化设置
+     * 解决aop与shiro冲突问题
      */
-    @Bean(name = "redisTemplateJackson")
-    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-
-        // 使用Jackson2JsonRedisSerialize 替换默认序列化
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        // 解决jackson2无法反序列化LocalDateTime的问题
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        objectMapper.registerModule(new JavaTimeModule());
-        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-
-        // 设置value的序列化规则和 key的序列化规则
-//        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
-        redisTemplate.setKeySerializer(jackson2JsonRedisSerializer);
-//        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
-        redisTemplate.setHashKeySerializer(jackson2JsonRedisSerializer);
-        redisTemplate.afterPropertiesSet();
-
-        return redisTemplate;
+    @Bean
+    public static DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator(){
+        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator=new DefaultAdvisorAutoProxyCreator();
+        defaultAdvisorAutoProxyCreator.setUsePrefix(true);
+        return defaultAdvisorAutoProxyCreator;
     }
+
 }

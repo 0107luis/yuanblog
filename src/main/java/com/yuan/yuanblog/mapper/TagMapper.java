@@ -1,10 +1,8 @@
 package com.yuan.yuanblog.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yuan.yuanblog.common.vo.BlogInfoVo;
-import com.yuan.yuanblog.entity.Blog;
-import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
+import com.yuan.yuanblog.entity.Tag;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -13,11 +11,9 @@ import java.util.List;
  * Mapper 接口
  * </p>
  */
-@Mapper
-@Repository
-public interface BlogMapper extends BaseMapper<Blog> {
-    /**
-     * 根据分类查询博客
-     */
-    List<BlogInfoVo> queryBlogByTypeName(String typeName);
+public interface TagMapper extends BaseMapper<Tag> {
+
+    List<Long> selectHotTagsIdsByLimit(int limit);
+
+    List<Tag> selectHotTagsByHotTagsId(List<Long> hotTagsIds);
 }

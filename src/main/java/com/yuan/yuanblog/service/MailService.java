@@ -1,4 +1,4 @@
-package com.ltj.blog.service;
+package com.yuan.yuanblog.service;
 
 public interface MailService {
 

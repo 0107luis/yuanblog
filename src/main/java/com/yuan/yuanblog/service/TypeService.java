@@ -1,7 +1,7 @@
-package com.ltj.blog.service;
+package com.yuan.yuanblog.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ltj.blog.entity.Type;
+import com.yuan.yuanblog.entity.Type;
 
 /**
  * 服务类

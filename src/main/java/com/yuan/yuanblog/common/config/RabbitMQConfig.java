@@ -1,26 +1,31 @@
 package com.yuan.yuanblog.common.config;
 
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-/**
- * MybatisPlus配置
- */
 @Configuration
-@EnableTransactionManagement
-@MapperScan("com.yuan.yuanblog.mapper")
-public class MybatisPlusConfig {
+public class RabbitMQConfig {
 
-    /**
-     * 分页插件
-     */
+    public final static String ES_QUEUE = "es_queue";
+    public final static String ES_EXCHANGE = "es_exchange";
+    public final static String ES_BINDING_KEY = "es_binding_key";
+
     @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-        return paginationInterceptor;
+    public Queue exQueue() {
+        return new Queue(ES_QUEUE);
+    }
+
+    @Bean
+    public DirectExchange esExchange() {
+        return new DirectExchange(ES_EXCHANGE);
+    }
+
+    @Bean
+    public Binding esBinding(Queue exQueue, DirectExchange esExchange) {
+        return BindingBuilder.bind(exQueue).to(esExchange).with(ES_BINDING_KEY);
     }
 }
-

@@ -1,12 +1,12 @@
-package com.ltj.blog.controller;
+package com.yuan.yuanblog.controller.controller;
 
 
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ltj.blog.common.vo.Result;
-import com.ltj.blog.common.vo.UserInfoVo;
-import com.ltj.blog.entity.User;
-import com.ltj.blog.service.UserService;
+import com.yuan.yuanblog.vo.Result;
+import com.yuan.yuanblog.vo.UserInfoVo;
+import com.yuan.yuanblog.entity.User;
+import com.yuan.yuanblog.service.UserService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;

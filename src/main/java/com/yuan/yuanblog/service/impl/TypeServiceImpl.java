@@ -1,9 +1,9 @@
-package com.ltj.blog.service.impl;
+package com.yuan.yuanblog.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ltj.blog.entity.Type;
-import com.ltj.blog.mapper.TypeMapper;
-import com.ltj.blog.service.TypeService;
+import com.yuan.yuanblog.entity.Type;
+import com.yuan.yuanblog.mapper.TypeMapper;
+import com.yuan.yuanblog.service.TypeService;
 import org.springframework.stereotype.Service;
 
 /**

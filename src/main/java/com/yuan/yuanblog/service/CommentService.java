@@ -1,8 +1,8 @@
-package com.ltj.blog.service;
+package com.yuan.yuanblog.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ltj.blog.common.vo.PageCommentVo;
-import com.ltj.blog.entity.Comment;
+import com.yuan.yuanblog.vo.PageCommentVo;
+import com.yuan.yuanblog.entity.Comment;
 
 import java.util.List;
 

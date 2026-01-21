@@ -1,9 +1,9 @@
-package com.ltj.blog.service.impl;
+package com.yuan.yuanblog.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ltj.blog.entity.VisitLog;
-import com.ltj.blog.mapper.VisitLogMapper;
-import com.ltj.blog.service.VisitLogService;
+import com.yuan.yuanblog.entity.VisitLog;
+import com.yuan.yuanblog.mapper.VisitLogMapper;
+import com.yuan.yuanblog.service.VisitLogService;
 import org.springframework.stereotype.Service;
 
 /**

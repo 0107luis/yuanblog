@@ -1,9 +1,9 @@
-package com.ltj.blog.service.impl;
+package com.yuan.yuanblog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.ltj.blog.entity.Blog;
-import com.ltj.blog.service.BlogService;
-import com.ltj.blog.service.ThreadService;
+import com.yuan.yuanblog.entity.Blog;
+import com.yuan.yuanblog.service.BlogService;
+import com.yuan.yuanblog.service.ThreadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
