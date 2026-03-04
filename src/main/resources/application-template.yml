@@ -1,0 +1,43 @@
+server:
+  port: 8085
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${SPRING_DATASOURCE_HOST:localhost}:${SPRING_DATASOURCE_PORT:3306}/${SPRING_DATASOURCE_DATABASE:yuanblog}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:your_password_here}
+  redis:
+    host: ${SPRING_REDIS_HOST:localhost}
+    port: ${SPRING_REDIS_PORT:6379}
+  mail:
+    host: ${SPRING_MAIL_HOST:smtp.163.com}
+    username: ${SPRING_MAIL_USERNAME:your_email@163.com}
+    password: ${SPRING_MAIL_PASSWORD:your_smtp_key}
+    default-encoding: UTF-8
+  rabbitmq:
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+  data:
+    elasticsearch:
+      cluster-name: ${SPRING_ELASTICSEARCH_CLUSTER_NAME:elasticsearch}
+      cluster-nodes: ${SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES:localhost:9300}
+      repositories:
+        enabled: true
+
+mail:
+  fromMail:
+    addr: ${MAIL_FROM_ADDRESS:your_email@163.com}
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+yuanblog:
+  jwt:
+    secret: ${YUANBLOG_JWT_SECRET:your_secret_key_here}
+    expire: ${YUANBLOG_JWT_EXPIRE:86400}
+    header: token

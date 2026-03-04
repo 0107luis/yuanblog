@@ -31,3 +31,43 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Docker - 敏感配置 ###
+.env
+docker-compose.yml
+
+### 敏感配置文件 - 包含密码等隐私信息 ###
+src/main/resources/application.yml
+src/main/resources/application-docker.yml
+
+### 文档和说明文件 ###
+*.md
+!README.md
+docs/
+
+### 截图和图片 ###
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+
+### DLL文件 ###
+*.dll
+
+### 其他工具目录 ###
+.opencode/
+
+### Node模块 ###
+node_modules/
+blog-view/node_modules/
+
+### 日志文件 ###
+*.log
+
+### 系统文件 ###
+.DS_Store
+Thumbs.db
+
+### 打包文件 ###
+package-lock.json

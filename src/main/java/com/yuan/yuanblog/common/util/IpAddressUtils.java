@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Component
@@ -23,6 +24,11 @@ public class IpAddressUtils {
 
     private static DbSearcher searcher;
     private static Method method;
+
+    // 新增：IPv6 本地回环地址正则（匹配 ::1 / 0:0:0:0:0:0:0:1 等格式）
+    private static final Pattern IPV6_LOCAL_PATTERN = Pattern.compile("^(::1)|(0:0:0:0:0:0:0:1)$", Pattern.CASE_INSENSITIVE);
+    // 新增：IPv6 地址通用正则（简单校验）
+    private static final Pattern IPV6_PATTERN = Pattern.compile("^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$");
 
     /**
      * 在服务启动时加载 ip2region.db 到内存中
@@ -45,13 +51,28 @@ public class IpAddressUtils {
 
     /**
      * 根据ip从 ip2region.db 中获取地理位置
+     * 修复：兼容 IPv6 本地地址，跳过无效 IPv6 解析
      */
     public static String getCityInfo(String ip) {
         System.out.println("=================ipipipipipipipipip=================" + ip);
+
+        // 修复1：处理 IPv6 本地回环地址，直接返回「本地」
+        if (IPV6_LOCAL_PATTERN.matcher(ip).matches()) {
+            return "本地";
+        }
+
+        // 修复2：如果是 IPv6 非本地地址，ip2region 不支持解析，直接返回 null
+        if (IPV6_PATTERN.matcher(ip).matches()) {
+            log.warn("Ip2region does not support IPv6 address parsing: {}", ip);
+            return null;
+        }
+
+        // 原有 IPv4 校验逻辑
         if (ip == null || !Util.isIpAddress(ip)) {
             log.error("Error: Invalid ip address");
             return null;
         }
+
         try {
             DataBlock dataBlock = (DataBlock) method.invoke(searcher, ip);
             String ipInfo = dataBlock.getRegion();
@@ -95,8 +116,8 @@ public class IpAddressUtils {
             log.error("IpUtils ERROR ", e);
         }
 
-        // 使用代理，则获取第一个IP地址
-        if (StringUtils.isEmpty(ip) && ip.length() > maxLength) {
+        // 修复3：修正逻辑笔误（&& 改为 ||），否则代理IP截取逻辑永远不执行
+        if (!StringUtils.isEmpty(ip) && ip.length() > maxLength) {
             int idx = ip.indexOf(seperator);
             if (idx > 0) {
                 ip = ip.substring(0, idx);
@@ -118,5 +139,3 @@ public class IpAddressUtils {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }
 }
-
-

@@ -87,8 +87,9 @@ public class BlogDocumentServiceImpl implements BlogDocumentService {
     public void createOrUpdateIndex(BlogMQIndexMessage message) {
         Long blogId = message.getBlogId();
         Blog blog = blogMapper.selectById(blogId);
-        if (blogDocumentMapper.existsById(blogId)) {
-            deleteIndex(message);
+        if (blog == null) {
+            log.warn("博客不存在，无法建立索引，blogId: {}", blogId);
+            return;
         }
         BlogDocument blogDocument = blogToBlogDocument(blog);
         BlogDocument saveBlogDocument = blogDocumentMapper.save(blogDocument);
