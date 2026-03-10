@@ -50,7 +50,7 @@
     </div>
 
     <!--添加分类对话框-->
-    <el-dialog title="添加分类" width="40%" :visible.sync="addDialogVisible" :close-on-click-modal="false" @close="addDialogClosed" class="modern-dialog">
+    <el-dialog title="添加分类" width="40%" :visible.sync="addDialogVisible" :close-on-click-modal="false" @close="addDialogClosed" class="modern-dialog" :modal="false">
       <el-form :model="addForm" :rules="formRules" ref="addFormRef" label-width="80px">
         <el-form-item label="名称" prop="typeName">
           <el-input v-model="addForm.typeName" placeholder="请输入分类名称"></el-input>
@@ -63,7 +63,7 @@
     </el-dialog>
 
     <!--编辑分类对话框-->
-    <el-dialog title="编辑分类" width="40%" :visible.sync="editDialogVisible" :close-on-click-modal="false" @close="editDialogClosed" class="modern-dialog">
+    <el-dialog title="编辑分类" width="40%" :visible.sync="editDialogVisible" :close-on-click-modal="false" @close="editDialogClosed" class="modern-dialog" :modal="false">
       <el-form :model="editForm" :rules="formRules" ref="editFormRef" label-width="80px">
         <el-form-item label="名称" prop="typeName">
           <el-input v-model="editForm.typeName" placeholder="请输入分类名称"></el-input>

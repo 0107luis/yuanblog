@@ -50,7 +50,7 @@
     </div>
 
     <!--添加标签对话框-->
-    <el-dialog title="添加标签" width="40%" :visible.sync="addDialogVisible" :close-on-click-modal="false" @close="addDialogClosed" class="modern-dialog">
+    <el-dialog title="添加标签" width="40%" :visible.sync="addDialogVisible" :close-on-click-modal="false" @close="addDialogClosed" class="modern-dialog" :modal="false">
       <el-form :model="addForm" :rules="formRules" ref="addFormRef" label-width="80px">
         <el-form-item label="名称" prop="tagName">
           <el-input v-model="addForm.tagName" placeholder="请输入标签名称"></el-input>
@@ -63,7 +63,7 @@
     </el-dialog>
 
     <!--编辑标签对话框-->
-    <el-dialog title="编辑标签" width="40%" :visible.sync="editDialogVisible" :close-on-click-modal="false" @close="editDialogClosed" class="modern-dialog">
+    <el-dialog title="编辑标签" width="40%" :visible.sync="editDialogVisible" :close-on-click-modal="false" @close="editDialogClosed" class="modern-dialog" :modal="false">
       <el-form :model="editForm" :rules="formRules" ref="editFormRef" label-width="80px">
         <el-form-item label="名称" prop="tagName">
           <el-input v-model="editForm.tagName" placeholder="请输入标签名称"></el-input>
